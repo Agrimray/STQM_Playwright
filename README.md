@@ -1,6 +1,3 @@
-Here’s a **professional and well-structured `README.md`** for your Playwright automation project — formatted for GitHub Markdown 👇
-
----
 
 # 🧩 Playwright Automation Testing – Comprehensive Technical Manual
 

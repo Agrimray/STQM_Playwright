@@ -203,5 +203,3 @@ jobs:
 ---
 
 
-
-Would you like me to make this README **render GitHub badges** (e.g., Node.js version, Playwright version, build passing, etc.) at the top for a more polished look?

@@ -1,128 +1,97 @@
-# STQM_Playwright
-Playwright Automation Testing  Comprehensive Technical Manual
+Here’s a **professional and well-structured `README.md`** for your Playwright automation project — formatted for GitHub Markdown 👇
 
-Authors: Agrim Ray, Shivam Babu
-Tool: Microsoft Playwright
-Purpose: This document serves as a complete technical reference for Playwright-based end-to-end testing automation, including architecture, setup, command usage, CI/CD integration, and sample test cases.
- 
-1. Introduction
+---
 
-Playwright is an open-source automation framework developed by Microsoft. It allows Quality Assurance (QA) engineers and developers to automate browsers for testing modern web applications. The framework supports scripting in JavaScript, TypeScript, Python, Java, and .NET, making it versatile across multiple development ecosystems.
+# 🧩 Playwright Automation Testing – Comprehensive Technical Manual
 
-Playwright’s design provides deterministic test execution, ensuring that flaky tests caused by race conditions are minimized. It also supports mobile device emulation, network interception, and native multi-tab testing.
-2. Why Choose Playwright
+**Authors:** Agrim Ray, Shivam Babu
+**Tool:** Microsoft Playwright
+**Repository:** [STQM_Playwright](https://github.com/Agrimray/STQM_Playwright)
 
-Playwright provides a superior automation experience compared to traditional tools such as Selenium or Cypress due to its native browser control, automatic waits, and multi-language support. It is optimized for CI/CD pipelines, headless testing, and complex user workflows.
-Feature Comparison:
-Feature	Playwright	Selenium	Cypress
-Cross-Browser Testing	 Yes (Chromium, Firefox, WebKit)	 Yes (All major browsers)	 Partial (Mainly Chromium)
-Parallel Execution	 Built-in with Test Runner	 Requires Selenium Grid	 Limited
-Mobile Emulation	 Native via Browser Context	 Requires Add-ons or Chrome DevTools	 Partial Support
-Headless Mode	 Built-in	 Built-in	 Built-in
-Multi-Tab / Multi-Context Support	 Fully Supported	Partial	Not Supported
-Language Support	JavaScript, TypeScript, Python, Java, .NET	Multiple (Java, Python, JS, C#, Ruby)	JavaScript Only
-Network Interception	 Built-in	Limited via Plugins	Partial
-Auto-Wait for Elements	 Native Auto-Wait Mechanism	 Manual Waits Required	 Built-in
-Test Isolation (BrowserContext)	 Built-in	 Requires Manual Handling	 Shared Browser State
-CI/CD Integration	 Full Native Support (GitHub, Jenkins, GitLab)	 Supported	 Supported
-Video & Screenshot Capture	 Native Support	Requires Third-party Libraries	 Built-in
-Trace Viewer	 Built-in Trace Tool	 Not Available	Limited
-API Testing Capability	 Supported	Partial via REST Clients	 Supported
-Execution Speed	Very Fast (Direct Browser API)	Moderate (WebDriver layer)	Fast
-Best Use Case	Modern Web Apps, CI/CD, Cross-Browser Testing	Legacy Support, Large Teams	Frontend Testing & Component Testing
-3. Installation & Setup
-1.	Prerequisites 
-a.	Node.js 18+
-b.	npm 8+
-c.	Supported OS: Windows, Linux, macOS
-2.	Commands
-a.	npm init playwright@latest
-b.	npx playwright install
-c.	npx playwright test –ui
-d.	npx playwright test –headed
-e.	npx playwright test --project=chromium
-f.	npx playwright test --reporter=html
-g.	npx playwright show-report
-S.No	Command	Description / Function	Expected Outcome / Example Output
-a.	npm init playwright@latest	Initializes a new Playwright testing project. Installs dependencies, creates test folder structure, and configuration files.	Creates /tests/, playwright.config.ts, and installs required browsers.
-b.	npx playwright install	Installs the latest stable versions of Chromium, Firefox, and WebKit browsers used by Playwright.	Downloads browsers and confirms installation via terminal.
-c.	npx playwright test --ui	Launches Playwright’s interactive test runner UI, allowing you to explore, debug, and run tests visually.	Opens graphical test dashboard to run tests manually.
-d.	npx playwright test --headed	Runs all Playwright tests in headed mode (with browser visible). Useful for debugging test steps visually.	Opens browser window showing test execution in real time.
-e.	npx playwright test --project=chromium	Executes tests on a specific browser engine (here, Chromium). Other options: firefox or webkit.	Runs tests only in the chosen browser project defined in config.
-f.	npx playwright test --reporter=html	Runs all tests and generates a detailed HTML test report in the /playwright-report directory.	Produces structured visual report including screenshots and logs.
-g.	npx playwright show-report	Opens the most recently generated HTML report in the default browser.	Displays full execution summary, pass/fail details, and traces.
-3.	Expected Output: Project initialized with default configuration.
-Browsers installed (Chromium, Firefox, WebKit).
-Test runner available via `npx playwright test.
-  
-4. Internal Architecture
+---
 
- 
-Playwright uses a layered architecture to ensure reliable communication between the test script and the browser instance.
+## 📘 Overview
 
-1. Client Libraries (Language Bindings)
-Languages Supported: JavaScript / TypeScript, Python, Java, .NET
-These libraries expose high-level APIs to testers and developers.
-Typical commands include:
-•	page.goto(url) → navigates to a web page
-•	page.click(selector) → clicks an element
-•	page.locator(selector) → finds and interacts with UI components
-Each API call made through these bindings is translated into a structured command that the Playwright Driver can interpret.
-Key Roles:
-•	Provide a consistent interface across languages
-•	Hide low-level protocol complexities
-•	Send automation instructions asynchronously to the Playwright Driver
-2. Playwright Driver (Core Engine)
-This is the heart of Playwright — a Node.js-based binary that receives API calls from the client libraries and converts them into browser-specific protocol messages.
-Responsibilities:
-•	Converts language-level commands (e.g., page.click()) into browser protocol instructions.
-•	Manages timeouts, auto-waiting, and event synchronization to eliminate flaky tests.
-•	Controls trace recording, network mocking, and execution context isolation.
-Key Advantage:
-The Driver doesn’t depend on third-party WebDrivers (unlike Selenium). Instead, it directly speaks the browser’s native DevTools protocol (CDP), improving speed and stability.
-3. Transport Layer (WebSocket / JSON RPC Channel)
-This layer forms the bi-directional communication link between the Playwright Driver and the actual browser process.
-Characteristics:
-•	Uses WebSocket or JSON-RPC protocol for message exchange.
-•	Allows continuous streaming of commands, responses, logs, and browser events.
-•	Captures console logs, network requests/responses, DOM events, and errors in real time.
-Purpose:
-It ensures Playwright can run browsers remotely (e.g., in containers or cloud CI runners) while keeping performance nearly identical to local execution.
-4. Browsers (Engines)
-Playwright supports the three major browser rendering engines:
-•	Chromium (used by Chrome and Edge)
-•	Firefox
-•	WebKit (used by Safari)
-Browser Management Features:
-•	Each browser version is pinned to a known revision for consistency in test results.
-•	Can run in headless (no GUI) or headed (visible window) modes.
-•	Automatically updates when the framework is upgraded.
-Benefit:
-This ensures your tests behave identically on all systems, avoiding discrepancies from local browser updates.
-5. Isolation Model (Browser → Context → Page → Frame → ElementHandle/Locator)
-This is Playwright’s unique multi-layer test isolation hierarchy:
-Level	Description	Purpose
-Browser	The top-level process managing a single browser instance (e.g., Chromium).	Shared process across multiple contexts.
-BrowserContext	A fresh, isolated browser profile (like a separate incognito session).	Ensures test independence — no cache or cookies are shared.
-Page	A single tab inside a BrowserContext.	Represents one test session; can be navigated independently.
-Frame	An embedded document inside a Page (e.g., iframes).	Enables multi-frame testing within one page.
-ElementHandle / Locator	A pointer to a specific DOM element or query selector.	Used to perform UI actions (clicks, inputs, validations).
-Example:
-A single test can open multiple Pages in one BrowserContext (e.g., for chat or multi-tab flows) while other tests run parallel contexts without interference.
-6. Test Runner & Workers
-Playwright comes with its own built-in test runner, known as @playwright/test.
-Key Components:
-•	Workers: Independent test execution threads; each runs in its own process and BrowserContext.
-•	Projects: Define different environments or browsers (e.g., one for Chrome, one for Firefox).
-•	Fixtures: Shared setup/teardown logic for reusable test data and browser sessions.
-•	Parallel Execution: Tests are distributed across workers automatically for faster execution.
-Example Workflow:
-1.	The runner discovers all test files (*.spec.ts).
-2.	Each test is assigned to a worker.
-3.	The worker launches a fresh context and executes tests.
-4.	Reports, traces, and screenshots are collected asynchronously.
-5. Recommended Project Structure
-Typical Playwright project directory:
+This repository serves as a **complete technical reference** for end-to-end automation testing using **Microsoft Playwright**.
+It covers the framework’s **architecture**, **setup**, **command usage**, **CI/CD integration**, and **practical test cases** based on real-world scenarios (Swag Labs).
+
+Playwright is a modern, cross-browser testing framework supporting **JavaScript**, **TypeScript**, **Python**, **Java**, and **.NET**, designed to provide **deterministic**, **fast**, and **reliable** automation.
+
+---
+
+## 🚀 Why Choose Playwright
+
+| Feature                      | Playwright                  | Selenium             | Cypress             |
+| ---------------------------- | --------------------------- | -------------------- | ------------------- |
+| **Cross-Browser Testing**    | ✅ Chromium, Firefox, WebKit | ✅ All major browsers | ⚠️ Mainly Chromium  |
+| **Parallel Execution**       | ✅ Built-in                  | ⚙️ Requires Grid     | ⚠️ Limited          |
+| **Mobile Emulation**         | ✅ Native                    | ⚙️ Chrome DevTools   | ⚠️ Partial          |
+| **Multi-Tab Support**        | ✅ Full                      | ⚠️ Partial           | ❌ Not supported     |
+| **Network Interception**     | ✅ Built-in                  | ⚙️ Plugins           | ⚠️ Partial          |
+| **Language Support**         | JS, TS, Python, Java, .NET  | Multiple             | JS only             |
+| **Test Isolation (Context)** | ✅ Built-in                  | ⚙️ Manual            | ⚠️ Shared           |
+| **Trace Viewer**             | ✅ Built-in                  | ❌                    | ⚠️ Limited          |
+| **Execution Speed**          | ⚡ Very Fast                 | 🕓 Moderate          | ⚡ Fast              |
+| **Best Use Case**            | Modern Web Apps, CI/CD      | Legacy Systems       | Frontend Components |
+
+---
+
+## ⚙️ Installation & Setup
+
+### 🧱 Prerequisites
+
+* Node.js ≥ 18
+* npm ≥ 8
+* OS: Windows / Linux / macOS
+
+### 🧰 Commands
+
+| Command                                  | Description                                               | Example Output                                               |
+| ---------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------ |
+| `npm init playwright@latest`             | Initializes Playwright project and installs dependencies. | Creates `/tests/`, `playwright.config.ts`, installs browsers |
+| `npx playwright install`                 | Installs Chromium, Firefox, and WebKit.                   | Browser binaries downloaded                                  |
+| `npx playwright test --ui`               | Opens the interactive test runner UI.                     | Graphical dashboard opens                                    |
+| `npx playwright test --headed`           | Runs tests with visible browser window.                   | Real-time execution shown                                    |
+| `npx playwright test --project=chromium` | Runs tests only on Chromium.                              | Chrome tests executed                                        |
+| `npx playwright test --reporter=html`    | Generates detailed HTML test report.                      | Report saved in `/playwright-report/`                        |
+| `npx playwright show-report`             | Opens the last generated report.                          | HTML report launched in browser                              |
+
+---
+
+## 🧩 Internal Architecture
+
+Playwright consists of multiple layers ensuring stable automation and consistent execution:
+
+1. **Client Libraries** (JS, Python, Java, .NET)
+   → High-level APIs (`page.goto()`, `page.click()`, etc.)
+
+2. **Playwright Driver**
+   → Converts API calls into native browser protocol commands (faster than Selenium WebDriver)
+
+3. **Transport Layer**
+   → Uses WebSocket / JSON-RPC to send commands between Driver and Browser
+
+4. **Browsers**
+   → Supports Chromium, Firefox, and WebKit; can run in headless or headed modes
+
+5. **Isolation Model**
+
+   | Level              | Description                | Purpose                  |
+   | ------------------ | -------------------------- | ------------------------ |
+   | **Browser**        | Manages a browser instance | Shared process           |
+   | **BrowserContext** | Isolated browser profile   | Ensures clean test state |
+   | **Page**           | A single browser tab       | Runs one test session    |
+   | **Frame**          | Nested iframe              | Multi-frame testing      |
+   | **Locator**        | Element reference          | UI interaction           |
+
+6. **Test Runner & Workers**
+   → Built-in runner handles fixtures, parallel execution, and automatic retries.
+
+---
+
+## 📁 Recommended Project Structure
+
+```
 project-root/
 │
 ├── tests/
@@ -138,25 +107,24 @@ project-root/
 ├── playwright.config.ts
 ├── package.json
 └── README.md
+```
 
- 
-Inside the tests Folder we write test case
- 
-6. Core Functions
+---
 
-   
-7. Demonstration Test Cases
+## 🧪 Sample Test Cases
 
-Below are demonstration test cases inspired by the Swag Labs (SauceDemo) application, illustrating practical automation workflows.
+### ✅ 1. Homepage Title Verification
 
-7.1 Title Verification
-
+```typescript
 test('Homepage Title', async ({ page }) => {
   await page.goto('https://www.saucedemo.com/');
   await expect(page).toHaveTitle('Swag Labs');
 });
-7.2 Valid Login
+```
 
+### ✅ 2. Valid Login
+
+```typescript
 test('Valid Login', async ({ page }) => {
   await page.goto('https://www.saucedemo.com/');
   await page.fill('#user-name', 'standard_user');
@@ -164,9 +132,11 @@ test('Valid Login', async ({ page }) => {
   await page.click('#login-button');
   await expect(page).toHaveURL(/inventory.html/);
 });
+```
 
-7.3 Invalid Login
+### ✅ 3. Invalid Login
 
+```typescript
 test('Invalid Login', async ({ page }) => {
   await page.goto('https://www.saucedemo.com/');
   await page.fill('#user-name', 'wrong_user');
@@ -174,20 +144,26 @@ test('Invalid Login', async ({ page }) => {
   await page.click('#login-button');
   await expect(page.locator('[data-test="error"]')).toHaveText(/Epic sadface/);
 });
+```
 
+### ✅ 4. Product Sorting
 
-7.4 Sorting, Cart, and Checkout Tests
-Includes product sorting, add-to-cart, remove-from-cart, responsive layout checks, and complete checkout verification.
+```typescript
 test('Sort Products', async ({ page }) => {
-await page.goto('https://www.saucedemo.com/');					      await page.fill('#user-name', 'standard_user');
-await page.fill('#password', 'secret_sauce');						       await page.click('#login-button');							     await page.selectOption('.product_sort_container', 'lohi');					 await expect(page.locator('.inventory_item_price').first()).toHaveText('$7.99');
+  await page.goto('https://www.saucedemo.com/');
+  await page.fill('#user-name', 'standard_user');
+  await page.fill('#password', 'secret_sauce');
+  await page.click('#login-button');
+  await page.selectOption('.product_sort_container', 'lohi');
+  await expect(page.locator('.inventory_item_price').first()).toHaveText('$7.99');
 });
-https://github.com/Agrimray/STQM_Playwright
-8. CI/CD Integration Example
+```
 
-Example workflow for GitHub Actions integration:
+---
 
-yaml
+## 🔄 CI/CD Integration Example (GitHub Actions)
+
+```yaml
 name: Playwright Tests
 on: [push, pull_request]
 jobs:
@@ -202,25 +178,33 @@ jobs:
       - run: npx playwright install --with-deps
       - run: npx playwright test --reporter=html
       - run: npx playwright show-report
+```
+
+---
+
+## 🧰 Troubleshooting Guide
+
+| **Problem**         | **Cause**          | **Resolution**                              |
+| ------------------- | ------------------ | ------------------------------------------- |
+| TimeoutError        | Network delay      | Increase `timeout` in configuration         |
+| Locator not found   | Incorrect selector | Use `page.locator()` with proper visibility |
+| Headless mode fails | Environment issue  | Try `--headed` mode for debugging           |
+| HTML report missing | Report path issue  | Re-run `npx playwright show-report`         |
+
+---
+
+## 📚 References & Sources
+
+1. [Microsoft Playwright Documentation](https://playwright.dev/)
+2. [Playwright GitHub Repository](https://github.com/microsoft/playwright)
+3. [BrowserStack – Playwright vs Selenium](https://www.browserstack.com/guide/playwright-vs-selenium)
+4. [SauceDemo Sample App](https://www.saucedemo.com/)
+5. [Martin Fowler – Testing Best Practices](https://martinfowler.com/articles/practical-test-pyramid.html)
+6. [Playwright CI/CD Integration Docs](https://playwright.dev/docs/ci)
+7. [Advanced Playwright Testing Setup (Medium)](https://medium.com/testvagrant)
+
+---
 
 
-9. Troubleshooting Guide
 
-
-Problem	Cause	Resolution
-TimeoutError	Network delay	Increase the timeout value in the configuration file
-Locator not found	Incorrect selector	Use page.locator() with correct selector and ensure element visibility
-Headless mode fails	Environment issue	Run tests in --headed mode for debugging
-HTML report missing	Report path issue	Re-run using npx playwright show-report
-
-
-10. References & Sources
-
-1. Microsoft Playwright Documentation: https://playwright.dev/
-2. Playwright GitHub Repository: https://github.com/microsoft/playwright
-3. BrowserStack Playwright vs Selenium: https://www.browserstack.com/guide/playwright-vs-selenium
-4. SauceDemo Sample App: https://www.saucedemo.com/
-5. Martin Fowler - Testing Best Practices: https://martinfowler.com/articles/practical-test-pyramid.html
-6. Playwright CI/CD Integration Docs: https://playwright.dev/docs/ci
-7. Medium: Advanced Playwright Testing Setup – https://medium.com/testvagrant
-
+Would you like me to make this README **render GitHub badges** (e.g., Node.js version, Playwright version, build passing, etc.) at the top for a more polished look?
